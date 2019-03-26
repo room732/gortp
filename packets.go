@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	defaultBufferSize  = 1200
+	defaultBufferSize  = 65507 //65535 - 28 (Max RTP packet size include 12 header's bytes)
 	freeListLengthRtp  = 10
 	freeListLengthRtcp = 5
 	rtpHeaderLength    = 12
@@ -93,7 +93,7 @@ const (
 
 // nullArray is what it's names says: a long array filled with zeros.
 // used to clear (fill with zeros) arrays/slices inside a buffer by copying.
-var nullArray [1200]byte
+var nullArray [defaultBufferSize]byte
 
 type RawPacket struct {
 	inUse    int
