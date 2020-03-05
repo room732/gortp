@@ -107,7 +107,7 @@ func (tp *TransportTCP) readDataPacket() {
 		rp.fromAddr.IpAddr = tp.remoteAddrRtp.IP
 		rp.fromAddr.DataPort = tp.remoteAddrRtp.Port
 		rp.fromAddr.CtrlPort = 0
-		rp.inUse = n
+		rp.inUse = n-2
 		copy(rp.buffer, buf[2:n])
 		if tp.callUpper != nil {
 			tp.callUpper.OnRecvData(rp)
