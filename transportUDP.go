@@ -23,7 +23,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/ez1261/gortp/iana"
+	"github.com/ezenkin/gortp/iana"
 	"golang.org/x/net/ipv4"
 )
 
