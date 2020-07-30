@@ -28,8 +28,8 @@ import (
 )
 
 const (
-	dataReceiveChanLen = 3
-	ctrlEventChanLen   = 3
+	dataReceiveChanLen = 30
+	ctrlEventChanLen   = 30
 )
 
 const (
