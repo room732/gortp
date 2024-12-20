@@ -41,8 +41,8 @@ type TransportUDP struct {
 // addr - The UPD socket's local IP address
 //
 // port - The port number of the RTP data port. This must be an even port number.
-//        The following odd port number is the control (RTCP) port.
 //
+//	The following odd port number is the control (RTCP) port.
 func NewTransportUDP(addr *net.IPAddr, port int) (*TransportUDP, error) {
 	tp := new(TransportUDP)
 	tp.callUpper = tp
@@ -53,7 +53,6 @@ func NewTransportUDP(addr *net.IPAddr, port int) (*TransportUDP, error) {
 
 // ListenOnTransports listens for incoming RTP and RTCP packets addressed
 // to this transport.
-//
 func (tp *TransportUDP) ListenOnTransports() (err error) {
 	tp.dataConn, err = net.ListenUDP(tp.localAddrRtp.Network(), tp.localAddrRtp)
 	if err != nil {

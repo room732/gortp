@@ -22,8 +22,8 @@ type TransportTCP struct {
 // addr - The TCP socket's local IP address
 //
 // port - The port number of the RTP data port. This must be an even port number.
-//        The following odd port number is the control (RTCP) port.
 //
+//	The following odd port number is the control (RTCP) port.
 func NewTransportTCP(addr *net.IPAddr, port int) (*TransportTCP, error) {
 	tp := new(TransportTCP)
 	tp.callUpper = tp
@@ -34,7 +34,6 @@ func NewTransportTCP(addr *net.IPAddr, port int) (*TransportTCP, error) {
 
 // ListenOnTransports listens for incoming RTP and RTCP packets addressed
 // to this transport.
-//
 func (tp *TransportTCP) ListenOnTransports() (err error) {
 	go func() {
 		log.Println("Start listening...")
@@ -107,7 +106,7 @@ func (tp *TransportTCP) readDataPacket() {
 		rp.fromAddr.IpAddr = tp.remoteAddrRtp.IP
 		rp.fromAddr.DataPort = tp.remoteAddrRtp.Port
 		rp.fromAddr.CtrlPort = 0
-		rp.inUse = n-2
+		rp.inUse = n - 2
 		copy(rp.buffer, buf[2:n])
 		if tp.callUpper != nil {
 			tp.callUpper.OnRecvData(rp)

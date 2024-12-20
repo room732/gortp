@@ -84,8 +84,7 @@ const (
 // For example if a dynamic format uses the payload number 98 then the application
 // may perform:
 //
-//     PayloadFormatMap[98] = &net.rtp.PayloadFormat{98, net.rtp.Audio, 41000, 2, "CD"}
-//
+//	PayloadFormatMap[98] = &net.rtp.PayloadFormat{98, net.rtp.Audio, 41000, 2, "CD"}
 type PayloadFormat struct {
 	TypeNumber,
 	MediaType,

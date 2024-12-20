@@ -46,7 +46,6 @@ type conflictAddr struct {
 
 // The RTCP control commands a a simple uint32: the MSB defines the command, the lower
 // 3 bytes the value for the command, if a value is necssary for the command.
-//
 const (
 	rtcpCtrlCmdMask     = 0xff000000
 	rtcpStopService     = 0x01000000
@@ -58,7 +57,6 @@ const (
 // USe this channel to send a stop service command or a modify time command to the
 // rtcpService. With this technique the rtcpService can modify its time between
 // service runs without being stopped.
-//
 type rtcpCtrlChan chan uint32
 
 // Manages the output SSRC streams.
@@ -78,7 +76,6 @@ type remoteMap map[uint32]*Address
 type conflictMap map[uint32]*conflictAddr
 
 // rtcpService provides the RTCP service and sends RTCP reports at computed intervals.
-//
 func (rs *Session) rtcpService(ti, td int64) {
 
 	granularity := time.Duration(250e6) // 250 ms
@@ -232,7 +229,6 @@ func (rs *Session) rtcpService(ti, td int64) {
 // of the output stream always fit in the RTCP compund, thus no further checks required.
 //
 // Other output streams just add their sender reports and SDES info.
-//
 func (rs *Session) buildRtcpPkt(strOut *SsrcStream, inStreamCnt int) (rc *CtrlPacket) {
 
 	var pktLen, offset int
@@ -275,7 +271,6 @@ func (rs *Session) buildRtcpPkt(strOut *SsrcStream, inStreamCnt int) (rc *CtrlPa
 }
 
 // buildRtcpByePkt builds an RTCP BYE compound.
-//
 func (rs *Session) buildRtcpByePkt(strOut *SsrcStream, reason string) (rc *CtrlPacket) {
 	rc = rs.buildRtcpPkt(strOut, 0)
 
@@ -289,7 +284,6 @@ func (rs *Session) buildRtcpByePkt(strOut *SsrcStream, reason string) (rc *CtrlP
 }
 
 // addSenderReport appends a SDES packet into to control packet.
-//
 func (rs *Session) addSdes(strOut *SsrcStream, rc *CtrlPacket) {
 	offsetSdes := rc.InUse()
 	if strOut.sdesChunkLen > 0 {
@@ -307,7 +301,6 @@ func (rs *Session) addSdes(strOut *SsrcStream, rc *CtrlPacket) {
 // The method just adds the sender report for the output stream. It does not loop over the
 // input streams to fill in the sreceiver reports. Only one output stream's sender report
 // contains receiver reports of our input streams.
-//
 func (rs *Session) addSenderReport(strOut *SsrcStream, rc *CtrlPacket) {
 
 	if !strOut.sender {
@@ -333,7 +326,6 @@ func (rs *Session) addSenderReport(strOut *SsrcStream, rc *CtrlPacket) {
 }
 
 // rtcpSenderCheck is a helper function for OnRecvCtrl and checks if a sender's SSRC.
-//
 func (rs *Session) rtcpSenderCheck(rp *CtrlPacket, offset int) (*SsrcStream, uint32, bool) {
 	ssrc := rp.Ssrc(offset) // get SSRC from control packet
 
@@ -374,7 +366,6 @@ func (rs *Session) rtcpSenderCheck(rp *CtrlPacket, offset int) (*SsrcStream, uin
 
 // sendDataCtrlEvent is a helper function to OnRecvData and sends one control event to the application
 // if the control event chanel is active.
-//
 func (rs *Session) sendDataCtrlEvent(code int, ssrc, index uint32) {
 	var ctrlEvArr [1]*CtrlEvent
 	ctrlEvArr[0] = newCrtlEvent(code, ssrc, index)
@@ -388,7 +379,6 @@ func (rs *Session) sendDataCtrlEvent(code int, ssrc, index uint32) {
 }
 
 // lookupSsrcMap returns a SsrcStream, either a SsrcStreamIn or SsrcStreamOut for a given SSRC, nil and false if none found.
-//
 func (rs *Session) lookupSsrcMap(ssrc uint32) (str *SsrcStream, idx uint32, exists bool) {
 	if str, idx, exists = rs.lookupSsrcMapOut(ssrc); exists {
 		return
@@ -400,7 +390,6 @@ func (rs *Session) lookupSsrcMap(ssrc uint32) (str *SsrcStream, idx uint32, exis
 }
 
 // lookupSsrcMapIn returns a SsrcStreamIn for a given SSRC, nil and false if none found.
-//
 func (rs *Session) lookupSsrcMapIn(ssrc uint32) (*SsrcStream, uint32, bool) {
 	for idx, str := range rs.streamsIn {
 		if ssrc == str.ssrc {
@@ -411,7 +400,6 @@ func (rs *Session) lookupSsrcMapIn(ssrc uint32) (*SsrcStream, uint32, bool) {
 }
 
 // lookupSsrcMapOut returns a SsrcStreamOut for a given SSRC, nil and false if none found.
-//
 func (rs *Session) lookupSsrcMapOut(ssrc uint32) (*SsrcStream, uint32, bool) {
 	for idx, str := range rs.streamsOut {
 		if ssrc == str.ssrc {
@@ -423,7 +411,6 @@ func (rs *Session) lookupSsrcMapOut(ssrc uint32) (*SsrcStream, uint32, bool) {
 
 // isOutputSsrc checks if a given SSRC is already used in our output streams.
 // Use this functions to detect collisions.
-//
 func (rs *Session) isOutputSsrc(ssrc uint32) (found bool) {
 	var str *SsrcStream
 	for _, str = range rs.streamsOut {
@@ -441,7 +428,6 @@ func (rs *Session) isOutputSsrc(ssrc uint32) (found bool) {
 //
 // If an entry was not found then create an entry, populate it and return entry
 // and false.
-//
 func (rs *Session) checkConflictData(addr *Address) (found bool) {
 	var entry *conflictAddr
 	tm := time.Now().UnixNano()
@@ -469,7 +455,6 @@ func (rs *Session) checkConflictData(addr *Address) (found bool) {
 //
 // If an entry was not found then create an entry, populate it and return entry
 // and false.
-//
 func (rs *Session) checkConflictCtrl(addr *Address) (found bool) {
 	var entry *conflictAddr
 	tm := time.Now().UnixNano()
@@ -493,7 +478,6 @@ func (rs *Session) checkConflictCtrl(addr *Address) (found bool) {
 
 // processSdesChunk checks if the chunk's SSRC is already known and if yes, parse it.
 // The method returns the length of the chunk .
-//
 func (rs *Session) processSdesChunk(chunk sdesChunk, rp *CtrlPacket) (int, uint32, bool) {
 	chunkLen, ok := chunk.chunkLen()
 	if !ok {
@@ -511,7 +495,6 @@ func (rs *Session) processSdesChunk(chunk sdesChunk, rp *CtrlPacket) (int, uint3
 //
 // The old output stream will then become an input streamm - this handling is called if we have a conflict during
 // collision, loop detection (see algorithm in chap 8.2, RFC 3550).
-//
 func (rs *Session) replaceStream(oldOut *SsrcStream) (newOut *SsrcStream) {
 	var str *SsrcStream
 	var idx uint32
@@ -564,7 +547,6 @@ const (
 // rtcpInterval helper function computes the next time when to send an RTCP packet.
 //
 // The algorithm is copied from RFC 2550, A.7 and a little bit adapted to Go. This includes some important comments :-) .
-//
 func rtcpInterval(members, senders int, rtcpBw, avrgSize float64, weSent, initial bool) (int64, int64) {
 
 	rtcpMinTime := rtcpMinimumTime

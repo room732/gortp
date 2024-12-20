@@ -311,8 +311,8 @@ func (rp *DataPacket) Marker() bool {
 // RTP packet to a multiple of 4, otherwise the given value is used which must be
 // greater than 1.
 //
-//     NOTE: padding is only done when adding payload to the packet, thus if an application
-//           required padding then seeting the payload should be the last step in RTP packet creation
+//	NOTE: padding is only done when adding payload to the packet, thus if an application
+//	      required padding then seeting the payload should be the last step in RTP packet creation
 func (rp *DataPacket) SetPadding(p bool, padTo int) {
 	if padTo == 0 {
 		padTo = padToMultipleOf

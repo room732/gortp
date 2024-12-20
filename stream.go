@@ -153,8 +153,7 @@ func (str *SsrcStream) SequenceNo() uint16 {
 // format or set the new payload format at the correct index before it sets the
 // payload type of the stream.
 //
-//  pt - the payload type number.
-//
+//	pt - the payload type number.
 func (str *SsrcStream) SetPayloadType(pt byte) (ok bool) {
 	if _, ok = PayloadFormatMap[int(pt)]; !ok {
 		return
@@ -169,7 +168,6 @@ func (str *SsrcStream) PayloadType() byte {
 }
 
 // StreamType returns stream's type, either input stream or otput stream.
-//
 func (str *SsrcStream) StreamType() int {
 	return str.streamType
 }
@@ -215,8 +213,7 @@ func newSsrcStreamOut(own *Address, ssrc uint32, sequenceNo uint16) (so *SsrcStr
 // number of samples correspond to the payload length. For variable codecs the number of samples
 // has no direct relationship with the payload length.
 //
-//   stamp - the RTP timestamp for this packet.
-//
+//	stamp - the RTP timestamp for this packet.
 func (str *SsrcStream) newDataPacket(stamp uint32) (rp *DataPacket) {
 	rp = newDataPacket()
 	rp.SetSsrc(str.ssrc)
@@ -232,10 +229,8 @@ func (str *SsrcStream) newDataPacket(stamp uint32) (rp *DataPacket) {
 // This method returns an initialized RTCP packet that contains the correct SSRC, and the RTCP packet
 // type. In addition the method returns the offset to the next position inside the buffer.
 //
-//
-//   streamindex - the index of the output stream as returned by NewSsrcStreamOut
-//   stamp       - the RTP timestamp for this packet.
-//
+//	streamindex - the index of the output stream as returned by NewSsrcStreamOut
+//	stamp       - the RTP timestamp for this packet.
 func (str *SsrcStream) newCtrlPacket(pktType int) (rp *CtrlPacket, offset int) {
 	rp, offset = newCtrlPacket()
 	rp.SetType(0, pktType)
@@ -570,7 +565,6 @@ func (si *SsrcStream) checkSsrcIncomingCtrl(existingStream bool, rs *Session, fr
 
 // makeRecvReport fills a receiver report at the current inUse position and returns offset that points after the report.
 // See chapter A.3 in RFC 3550 regarding the packet lost algorithm, end of chapter 6.4.1 regarding LSR, DLSR stuff.
-//
 func (si *SsrcStream) makeRecvReport(rp *CtrlPacket) (newOffset int) {
 
 	report, newOffset := rp.newRecvReport()
