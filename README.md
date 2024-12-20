@@ -1,6 +1,7 @@
-GoRTP
+gortp
 =====
-[![Build Status](https://drone.io/github.com/danielvargas/gortp/status.png)](https://drone.io/github.com/danielvargas/gortp/latest)
+
+Forked from -> evie/gortp -> wernerd/GoRTP
 
 ## RTP/RTCP stack for Go
 
@@ -53,12 +54,12 @@ the software just add the main goRTP directory to GOPATH. For further
 information about this structure run `go help gopath` and follow the
 instructions.
 
-To build and install the package just run `go get github.com/danielvargas/gortp`. 
-To excecute the tests just run `go test github.com/danielvargas/gortp`. The tests 
+To build and install the package just run `go get github.com/room732/gortp`.
+To excecute the tests just run `go test github.com/room732/gortp`. The tests
 check if the code works with the current Go installation on your system. It should
 PASS.
 
-A demo program is available and is called _rtpmain_. Use `go install github.com/danielvargas/gortp/rtpmain` to build it. 
+A demo program is available and is called _rtpmain_. Use `go install github.com/room732/gortp/rtpmain` to build it.
 The command `go install net/rtpmain` installs it in
 the `bin` directory of the main directory.
 
