@@ -39,7 +39,7 @@ var csrc_1 = []uint32{0x21435465, 0x65544322}
 var csrc_2 = []uint32{0x23445566, 0x66554423, 0x87766554}
 var csrc_3 = []uint32{}
 
-//                 profile ID     length
+// profile ID     length
 var ext_1 = []byte{0x77, 0x88, 0x00, 0x02, 0x01, 0x02, 0x03, 0x04, 0x04, 0x03, 0x02, 0x01}                         // len: 12
 var ext_2 = []byte{0x77, 0x89, 0x00, 0x03, 0x01, 0x02, 0x03, 0x04, 0x04, 0x03, 0x02, 0x01, 0x11, 0x22, 0x33, 0x44} // len: 16
 var ext_3 = []byte{0x77, 0x8a, 0x00, 0x00}                                                                         // len: 4
@@ -83,7 +83,7 @@ func csrcTest(rp *DataPacket, t *testing.T, csrc []uint32, run int) (result bool
 	csrcTmp := rp.CsrcList()
 	for i, v := range csrcTmp {
 		if v != csrc[i] {
-			t.Error(fmt.Sprintf("CSRC-%d check failed at %i. Expected: %x, got: %x\n", run, i, csrc[i], csrcTmp[i]))
+			t.Error(fmt.Sprintf("CSRC-%d check failed at %d. Expected: %x, got: %x\n", run, i, csrc[i], csrcTmp[i]))
 			return
 		}
 	}
@@ -96,7 +96,7 @@ func csrcTest(rp *DataPacket, t *testing.T, csrc []uint32, run int) (result bool
 	pay := rp.Payload()
 	for i, v := range payload {
 		if v != pay[i] {
-			t.Error(fmt.Sprintf("Payload-CSRC-%d check failed at %i. Expected: %x, got: %x\n", run, i, payload[i], pay[i]))
+			t.Error(fmt.Sprintf("Payload-CSRC-%d check failed at %d. Expected: %x, got: %x\n", run, i, payload[i], pay[i]))
 			return
 		}
 	}
@@ -122,7 +122,7 @@ func extTest(rp *DataPacket, t *testing.T, ext []byte, run int) (result bool) {
 	extTmp := rp.Extension()
 	for i, v := range extTmp {
 		if v != ext[i] {
-			t.Error(fmt.Sprintf("EXT-%d check failed at %i. Expected: %x, got: %x\n", run, i, ext[i], extTmp[i]))
+			t.Error(fmt.Sprintf("EXT-%d check failed at %d. Expected: %x, got: %x\n", run, i, ext[i], extTmp[i]))
 			return
 		}
 	}
@@ -135,7 +135,7 @@ func extTest(rp *DataPacket, t *testing.T, ext []byte, run int) (result bool) {
 	pay := rp.Payload()
 	for i, v := range payload {
 		if v != pay[i] {
-			t.Error(fmt.Sprintf("Payload-EXT-%d check failed at %i. Expected: %x, got: %x\n", run, i, payload[i], pay[i]))
+			t.Error(fmt.Sprintf("Payload-EXT-%d check failed at %d. Expected: %x, got: %x\n", run, i, payload[i], pay[i]))
 			return
 		}
 	}
@@ -202,7 +202,7 @@ func rtpPacket(t *testing.T) {
 	}
 	for i, v := range payload {
 		if v != pay[i] {
-			t.Error(fmt.Sprintf("Payload check failed at %i. Expected: %x, got: %x\n", i, payload[i], pay[i]))
+			t.Error(fmt.Sprintf("Payload check failed at %d. Expected: %x, got: %x\n", i, payload[i], pay[i]))
 			return
 		}
 	}
@@ -254,7 +254,7 @@ func rtpPacket(t *testing.T) {
 	}
 	for i, v := range payload {
 		if v != pay[i] {
-			t.Error(fmt.Sprintf("Payload check failed at %i. Expected: %x, got: %x\n", i, payload[i], pay[i]))
+			t.Error(fmt.Sprintf("Payload check failed at %d. Expected: %x, got: %x\n", i, payload[i], pay[i]))
 			return
 		}
 	}
