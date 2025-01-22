@@ -66,7 +66,7 @@ func sendLocalToRemote() {
 		}
 		cnt++
 		stamp += 160
-		time.Sleep(20e6)
+		time.Sleep(20 * time.Millisecond)
 	}
 }
 
@@ -84,7 +84,7 @@ func sendLocalToRemoteIdx(index uint32) {
 		}
 		cnt++
 		stamp += 160
-		time.Sleep(20e6)
+		time.Sleep(20 * time.Millisecond)
 	}
 }
 
@@ -102,7 +102,7 @@ func sendRemoteToLocal() {
 		}
 		cnt++
 		stamp += 160
-		time.Sleep(20e6)
+		time.Sleep(20 * time.Millisecond)
 	}
 }
 
@@ -252,10 +252,10 @@ func fullDuplex() {
 	go sendLocalToRemote()
 	go sendRemoteToLocal()
 
-	time.Sleep(8e9)
+	time.Sleep(8 * time.Second)
 
 	stop = true
-	time.Sleep(30e6) // allow the sender to drain
+	time.Sleep(30 * time.Millisecond) // allow the sender to drain
 
 	stopRemoteRecv <- true
 	stopLocalRecv <- true
@@ -265,7 +265,7 @@ func fullDuplex() {
 	rsLocal.CloseSession()
 	rsRemote.CloseSession()
 
-	time.Sleep(10e6)
+	time.Sleep(10 * time.Millisecond)
 
 	fmt.Println("Full duplex test done.")
 }
@@ -317,10 +317,10 @@ func fullDuplexTwoStreams() {
 	go sendLocalToRemoteIdx(strLocalIdx)
 	go sendRemoteToLocal()
 
-	time.Sleep(8e9)
+	time.Sleep(8 * time.Second)
 
 	stop = true
-	time.Sleep(30e6) // allow  the sender to drain
+	time.Sleep(30 * time.Millisecond) // allow  the sender to drain
 
 	stopRemoteRecv <- true
 	stopLocalRecv <- true
@@ -330,7 +330,7 @@ func fullDuplexTwoStreams() {
 	rsLocal.CloseSession()
 	rsRemote.CloseSession()
 
-	time.Sleep(10e6)
+	time.Sleep(10 * time.Millisecond)
 
 	fmt.Printf("Full duplex test with 2 output streams done.")
 }
@@ -376,10 +376,10 @@ func simpleRtp() {
 	go sendLocalToRemote()
 	go sendRemoteToLocal()
 
-	time.Sleep(8e9)
+	time.Sleep(8 * time.Second)
 
 	stop = true
-	time.Sleep(30e6) // allow the sender to drain
+	time.Sleep(30 * time.Millisecond) // allow the sender to drain
 
 	stopRemoteRecv <- true
 	stopLocalRecv <- true
@@ -390,7 +390,7 @@ func simpleRtp() {
 	rsLocal.CloseRecv()
 	rsRemote.CloseRecv()
 
-	time.Sleep(10e6)
+	time.Sleep(10 * time.Millisecond)
 
 	fmt.Printf("Simple RTP test done.")
 
