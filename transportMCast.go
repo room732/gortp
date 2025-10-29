@@ -19,6 +19,7 @@
 package rtp
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"syscall"
@@ -56,48 +57,50 @@ func NewTransportMulticast(addr *net.IPAddr, port int) (*TransportMulticast, err
 // ListenOnTransports listens for incoming RTP and RTCP packets addressed
 // to this transport.
 func (tp *TransportMulticast) ListenOnTransports() (err error) {
-	tp.dataConn, err = net.ListenMulticastUDP("udp", nil, tp.localAddrRtp)
-	// tp.dataConn, err = net.ListenUDP(tp.localAddrRtp.Network(), tp.localAddrRtp)
-	if err != nil {
-		fmt.Println("ListenMulticastUDP for RTP err:", err)
-		return
-	}
-	if err := setReuseAddr(tp.dataConn); err != nil {
-		fmt.Println("setReusePort for RTP err:", err)
+	mcastIP := tp.localAddrRtp.IP
+	port := tp.localAddrRtp.Port
+
+	// custom bind with reuse options
+	lc := net.ListenConfig{
+		Control: func(network, address string, c syscall.RawConn) error {
+			var ctrlErr error
+			c.Control(func(fd uintptr) {
+				if err := syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1); err != nil {
+					ctrlErr = fmt.Errorf("SO_REUSEADDR: %w", err)
+					return
+				}
+			})
+			return ctrlErr
+		},
 	}
 
-	p := ipv4.NewConn(tp.dataConn)
-	if err = p.SetTOS(iana.DiffServAF41); err != nil {
-		fmt.Printf("TransportMulticast: failed to set TOS marking on dataConn\n")
+	listenAddr := fmt.Sprintf("0.0.0.0:%d", port)
+	pktConn, err := lc.ListenPacket(context.Background(), "udp4", listenAddr)
+	if err != nil {
+		return fmt.Errorf("ListenPacket: %w", err)
 	}
+
+	udpConn := pktConn.(*net.UDPConn)
+	tp.dataConn = udpConn
+	p := ipv4.NewPacketConn(udpConn)
+
+	// ifi, _ := net.InterfaceByName("eth0")
+	var ifi *net.Interface = nil // default ifi
+
+	if err := p.JoinGroup(ifi, &net.UDPAddr{IP: mcastIP}); err != nil {
+		return fmt.Errorf("JoinGroup %v: %w", mcastIP, err)
+	}
+
+	_ = p.SetMulticastLoopback(false)
+
+	// used for sender only
+	if err := p.SetTOS(iana.DiffServAF41); err != nil {
+		fmt.Println("failed to set TOS marking on dataConn:", err)
+	}
+
 	go tp.readDataPacket()
-
-	// TODO rm ctrl conn for mcast ?
-	// tp.ctrlConn, err = net.ListenMulticastUDP("udp", nil, tp.localAddrRtcp)
-	// if err != nil {
-	// 	fmt.Println("ListenMulticastUDP for RTCP err:", err)
-	// 	tp.dataConn.Close()
-	// 	tp.dataConn = nil
-	// 	return
-	// }
-	// if err := setReuseAddr(tp.ctrlConn); err != nil {
-	// 	fmt.Println("setReusePort for RTCP err:", err)
-	// }
-	// go tp.readCtrlPacket()
+	// no second ctrl connection for multicast
 	return nil
-}
-
-func setReuseAddr(conn *net.UDPConn) error {
-	rc, err := conn.SyscallConn()
-	if err != nil {
-		return err
-	}
-
-	err = rc.Control(func(fd uintptr) {
-		err = syscall.SetsockoptInt(int(fd), syscall.SOL_SOCKET, syscall.SO_REUSEADDR, 1)
-	})
-
-	return err
 }
 
 // *** The following methods implement the rtp.TransportRecv interface.
